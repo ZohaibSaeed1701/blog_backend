@@ -1,21 +1,20 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Depends
+from db import get_db
+from sqlalchemy.orm import Session
+from sqlalchemy import text
 
-app = FastAPI(title="Simple FastAPI Project")
+app = FastAPI(title="Professional FastAPI Project")
 
-data = {1: {"data": "This is first"}, 2: {"data": "This is second"}}
 
-@app.get("/test")
-def test():
-    return data
+@app.get("/")
+def home():
+    return {"message": "FastAPI project is running successfully!"}
 
-@app.get("/test/{id}")
-def testing(id: int):
-    if id not in data:
-        raise HTTPException(status_code=401, detail="This id not found")
-    return data.get(id)
 
-@app.post("/test/{id}")
-def test(id: int):
-    if id not in data:
-        raise HTTPException(status_code=401, detail="This id not found")
-    return data.get(id)
+@app.get("/test-db")
+def test_db_connection(db: Session = Depends(get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+        return {"status": "Database connected successfully!"}
+    except Exception as e:
+        return {"error": str(e)}
