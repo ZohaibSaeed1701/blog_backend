@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 from db import get_db
 from ..schemas.blog import PostBlog, GetBlog
@@ -19,5 +20,12 @@ router = APIRouter()
 
 
 @router.post("/create_blog", response_model=GetBlog)
-async def create_blog():
-    pass
+async def create_blog(payload: PostBlog, db: Session = Depends(get_db)):
+    db_data = Blog (
+        context = payload.context,
+        embedding = "Zohaib is the Best"
+    )
+    db.add(db_data)
+    db.commit()
+    db.refresh(db_data)
+    return db_data

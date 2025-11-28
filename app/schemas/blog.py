@@ -5,7 +5,6 @@ class PostBlog(BaseModel):
 
 
 class GetBlog(BaseModel):
-    id: str
     context: str
     embedding: str
 
